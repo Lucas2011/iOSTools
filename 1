@@ -1,0 +1,44 @@
+-(void)gradentWith:(CGRect)frame{
+    //创建path
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    // 添加路径[1条点(100,100)到点(200,100)的线段]到path
+    [path moveToPoint:CGPointMake(20 , 290)];
+    [path addLineToPoint:CGPointMake(250, 290)];
+    // 
+    [path stroke];
+    //
+    _progressLayer = [CAShapeLayer layer];
+    _progressLayer.frame = self.view.bounds;
+    _progressLayer.fillColor =[[UIColor clearColor] CGColor];
+    _progressLayer.strokeColor=[UIColor redColor].CGColor;
+    _progressLayer.lineCap = kCALineCapRound;
+    _progressLayer.lineWidth = 20;
+    //
+    
+    CALayer * grain = [CALayer layer];
+    CAGradientLayer *gradientLayer =[CAGradientLayer layer];
+    UIColor * fixColor=[UIColor blueColor];
+    //    UIColor * fixColor  = [UIColor colorWithRed:48/255.0 green:149/255.0 blue:215/255.0 alpha:1];
+    UIColor * preColor=[UIColor whiteColor];
+    gradientLayer.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height);
+    [gradientLayer setColors:[NSArray arrayWithObjects:(id)[preColor CGColor],(id)[fixColor CGColor], nil]];
+    // 
+    [gradientLayer setLocations:@[@0.01,@1]];
+    // 
+    [gradientLayer setStartPoint:CGPointMake(0, 0)];
+    // 
+    [gradientLayer setEndPoint:CGPointMake(1, 1)];
+    [grain addSublayer:gradientLayer];
+    [grain setMask:_progressLayer];
+    [self.view.layer addSublayer:grain];
+    //
+    CABasicAnimation *pathAnimation=[CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+    pathAnimation.duration = 1;
+    pathAnimation.timingFunction=[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+    pathAnimation.fromValue=[NSNumber numberWithFloat:0.0f];
+    pathAnimation.toValue=[NSNumber numberWithFloat:1.0f];
+    pathAnimation.autoreverses=NO;
+    //pathAnimation.repeatCount = INFINITY;
+    [_progressLayer addAnimation:pathAnimation forKey:@"strokeEndAnimation"];
+    _progressLayer.path=path.CGPath;
+}
